@@ -1,5 +1,6 @@
 import os
-from flask import flaskapp = FLASK(__name__)
+from flask import Flask
+app = FLASK(__name__)
 
 @app.route("/")
 def main():
