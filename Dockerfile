@@ -1,8 +1,8 @@
-FROM oc
+FROM centos/s2i-base-centos7
 
-RUN yum install -u python python-pip
+EXPOSE 8080
 
-RUN pip install flask
+RUN yum install -y -u python python-pip && pip install flask
 
 COPY app.py /opt/
 
