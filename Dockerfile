@@ -2,7 +2,7 @@ FROM centos/s2i-base-centos7
 
 EXPOSE 8080
 
-RUN yum -y install epel-release && yum -y install python-pip
+RUN yum -y install epel-release && yum -y pip install --upgrade pip && pip install flask
 
 COPY app.py /opt/
 
