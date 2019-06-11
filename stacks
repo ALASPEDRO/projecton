@@ -1,35 +1,29 @@
 FROM registry.access.redhat.com/codeready-workspaces/stacks-python:latest
 USER root
+# adding oc client
 RUN curl -LO https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz && tar xvf openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz
 RUN mv openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit/oc /usr/local/bin/oc && chmod +x /usr/local/bin/oc 
+# adding centos 7 repository
 RUN echo $'[centos]\nname=CentOS-7\nbaseurl=http://distro.ibiblio.org/centos/7.6.1810/os/x86_64/\nenabled=1 \ngpgcheck=0'>> /etc/yum.repos.d/centos.repo
+# installing zsh tool
 RUN yum -y install zsh
-RUN yum-config-manager --enable rhel-server-rhscl-7-rpms
-RUN yum-config-manager --add-repo=https://copr.fedoraproject.org/coprs/rhscl/centos-release-scl/repo/epel-6/rhscl-centos-release-scl-epel-6.repo
-RUN yum install centos-release-scl centos-release-scl-rh -y
+# installing ruby dependencies
 RUN yum install curl gcc-c++ patch readline readline-devel zlib zlib-devel libyaml-devel libffi-devel openssl-devel make bzip2 autoconf automake libtool bison iconv-devel sqlite-devel -y
 RUN curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 RUN gpg2 --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
 RUN curl -sSL https://get.rvm.io | bash -s stable
-#ENV PATH=/usr/local/rvm:$PATH
+# adding root to rvm group
 RUN usermod -g rvm root
-RUN adduser utilisateur
-RUN usermod -g rvm utilisateur
-#RUN source /usr/local/rvm/scripts/rvm
-#RUN source /etc/profile.d/rvm.sh
-USER utilisateur
-USER root
-#RUN chsh -s /bin/bash root
-SHELL  ["/bin/bash", "-c"]
-RUN echo "ta gueule"
-#RUN /bin/bash -l -c "rvm install 2.5.1"
-SHELL  ["/bin/bash", "-l", "-c"]
-RUN rvm install 2.5.1
+# making bash as default shell command
+SHELL ["/bin/bash", "-l", "-c"]
+# installing ruby 2.6.3
+RUN rvm install 2.6.3
 RUN rvm list
-RUN rvm use 2.5.1 --default 
+RUN rvm use 2.6.3 --default 
 RUN ruby --version
 RUN gem -v
 RUN gcc -v
 RUN g++ -v
 RUN make -v
+# installing jekyll bundler
 RUN gem install jekyll bundler
