@@ -8,12 +8,13 @@ RUN echo $'[centos]\nname=CentOS-7\nbaseurl=http://distro.ibiblio.org/centos/7.6
 # installing zsh tool
 RUN yum -y install zsh
 # installing ruby dependencies
-RUN yum install curl gcc-c++ patch readline readline-devel zlib zlib-devel libyaml-devel libffi-devel openssl-devel make bzip2 autoconf automake libtool bison iconv-devel sqlite-devel -y
+RUN yum install curl gcc-c++ patch readline readline-devel zlib zlib-devel libyaml-devel libffi-devel openssl-devel make bzip2 autoconf automake libtool bison iconv-devel sqlite-devel net-tools -y
 RUN curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
 RUN gpg2 --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
 RUN curl -sSL https://get.rvm.io | bash -s stable
 # adding root to rvm group
 RUN usermod -g rvm root
+RUN usermod -g rvm jboss
 # making bash as default shell command
 SHELL ["/bin/bash", "-l", "-c"]
 # installing ruby 2.6.3
@@ -26,4 +27,13 @@ RUN gcc -v
 RUN g++ -v
 RUN make -v
 # installing jekyll bundler
+RUN mkdir /DONT_REMOVE
+RUN chown -R jboss:1001 /DONT_REMOVE
+USER jboss
+WORKDIR /DONT_REMOVE
 RUN gem install jekyll bundler
+RUN jekyll new project_site
+WORKDIR /DONT_REMOVE/project_site
+RUN bundle install
+RUN jekyll -v
+WORKDIR /projects
