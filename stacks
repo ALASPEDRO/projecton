@@ -30,5 +30,8 @@ WORKDIR /DONT_REMOVE
 RUN gem install jekyll bundler && \
     jekyll new project_site
 WORKDIR /DONT_REMOVE/project_site
-RUN bundle install
+RUN bundle install && \
+    echo -e "# ~/.tmux.conf\n# unbind default prefix and set it to ctrl-a\nunbind C-b\nset -g prefix C-a\nbind C-a send-prefix" > ~/.tmux.conf && \
+    bind r source-file ~/.tmux.conf && \
+    echo -e "tmux new-session \; split-window -v -p 3\; send-keys 'watch -n5 echo date' C-m \; select-pane -t 1 \; break-pane -d \;" >> ~/.bashrc
 WORKDIR /projects
